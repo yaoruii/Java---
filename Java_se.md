@@ -1,4 +1,5 @@
 # JAVA SE
+> 上完cs61b后，想系统地学jAVA SE，在how2j网站上，但是还是不够详细，不过作为一个人，对任何一个领域，怎么可能做到地毯式学习记录呢？慢慢来。
 
 ## 1，变量
 > 定义是： 用来命名一个数据的标识符。year 这个标识符就是一个变量，它代表1949这个值
@@ -180,7 +181,244 @@ this代表当前对象：
 #### 调用类方法
 同理，两种方法，1. 对象.类方法。2. 类.类方法。但是建议使用第二种 类.类方法 的方式进行，这样更符合语义上的理解。很多时候是没有实例的，Math.random()。
 
+* 如果在某个方法中调用了**对象属性**，只有存在具体的对象的时候才有意义，那么设计为对象方法比较好。
+* 静态方法只能访问静态、局部定义的属性或者静态方法.
+* 但是，可以通过将参数的形式，将一个该类的引用传入到该静态方法中，或者在静态方法内部实例化一个对象，通过对象访问非静态方法。
+```
+        public void die(){
+            hp = 7;
+        }
 
+        //类方法，静态方法
+        //通过类就可以直接调用
+        public static void battleWin(Hero s){//方法一
+            System.out.println("battle win");
+            Hero h = new Hero();//方法二
+            h.name = "yaorui";
+            h.die();
+            System.out.println(h.hp);
+            System.out.println(s.hp);
+            System.out.println("如果输出了说明这样可以访问非静态");
+        }
+```
+
+### 属性初始化
+#### 对象属性初始化
+有三种，按照优先级：
+* 1，构造函数初始化
+* 2，初始化快
+```
+{
+        maxHP = 200; //初始化块
+    }  
+```
+* 3，在声明的时候初始化
+
+#### 类属性初始化
+有两种:
+* 1, 静态块
+```
+static{
+        itemCapacity = 6;//静态初始化块 初始化
+    }
+```
+* 2,声明的时候初始化
+
+### 单例模式
+> 单例模式又叫做 Singleton模式，指的是一个类，在一个JVM里，只有一个实例存在
+#### 什么是单例模式？
+回答的时候，要答到三元素
+1. 构造方法私有化  
+2. 静态属性指向实例  
+3. public static的 getInstance方法，返回第二步的静态属性  
+#### 饿汉式单例模式
+通过私有化private 其构造方法，使得外部无法通过new 得到新的实例。在类的内部声明一个静态属性，指向这个对象。
+
+提供了一个public static的getInstance方法，**外部调用者通过该方法获取12行定义的对象，而且每一次都是获取同一个对象**。 从而达到单例的目的。这种单例模式又叫做饿汉式单例模式，无论如何都会创建一个实例
+
+```
+package charactor;
+ 
+public class GiantDragon {
+ 
+    //私有化构造方法使得该类无法在外部通过new 进行实例化
+    private GiantDragon(){
+         
+    }
+ 
+    //准备一个类属性，指向一个实例化对象。 因为是类属性，所以只有一个
+ 
+    private static GiantDragon instance = new GiantDragon();
+     
+    //public static 方法，提供给调用者获取12行定义的对象
+    public static GiantDragon getInstance(){
+        return instance;
+    }
+     
+}
+```
+#### 懒汉式单例模式
+只有在外部使用者调用getInstance的时候，才会创建实例.
+
+根据代码，可以看到，静态属性在声明时未被初始化，为null，只有外部调用getInstance的时候，才实例化，之后再被调用，就会返回该静态属性指向的同一个对象。
+```
+package charactor;
+ 
+public class GiantDragon {
+  
+    //私有化构造方法使得该类无法在外部通过new 进行实例化
+    private GiantDragon(){       
+    }
+  
+    //准备一个类属性，用于指向一个实例化对象，但是暂时指向null
+    private static GiantDragon instance;
+      
+    //public static 方法，返回实例对象
+    public static GiantDragon getInstance(){
+        //第一次访问的时候，发现instance没有指向任何对象，这时实例化一个对象
+        if(null==instance){
+            instance = new GiantDragon();
+        }
+        //返回 instance指向的对象
+        return instance;
+    }
+      
+}
+```
+### 枚举类型
+枚举enum是一种特殊的类(还是类)，使用枚举可以很方便的定义常量。比如设计一个枚举类型 季节，里面有4种常量。
+```
+public enum Season {
+    SPRING,SUMMER,AUTUMN,WINTER
+}
+```
+#### 遍历枚举
+Season.values()
+```
+for (Season s : Season.values()) {
+            System.out.println(s);
+        }
+```
+
+## 6,接口与继承/interface and extends
+
+### 接口
+> 接口就像是一种约定，我们约定某些英雄是物理系英雄，那么他们就一定能够进行物理攻击。
+设计一类英雄，能够使用物理攻击，这类英雄在LOL中被叫做AD 类：ADHero。继承了Hero 类，所以继承了name,hp,armor等属性。
+
+**实现了AD这个接口，就必须提供AD接口中声明的方法physicAttack()，实现在语法上使用关键字 implements**
+
+同理，可以设计一类英雄，只能使用魔法攻击，这类英雄在LOL中被叫做AP 类：APHero继承了Hero 类，所以继承了name,hp,armor等属性。
+
+设计一类英雄，既能进行物理攻击，又能进行魔法攻击：**即实现多个接口：**
+
+```
+package charactor;
+  
+//同时能进行物理和魔法伤害的英雄
+public class ADAPHero extends Hero implements AD,AP{//直接在implements后边加上接口名，用逗号隔开。
+  
+    @Override
+    public void magicAttack() {
+        System.out.println("进行魔法攻击");
+    }
+  
+    @Override
+    public void physicAttack() {
+        System.out.println("进行物理攻击");
+    }
+  
+}
+```
+### 对象转换
+#### 引用类型与对象类型
+> ADHero ad = new ADHero();  
+在这个例子中，有一个对象 new ADHero(), 同时也有一个引用ad。  
+对象的类型是ADHero，引用的类型也是ADHero。  
+引用类型和对象类型是一样的。
+#### 子类转父类/接口(向上转型)
+当引用类型和对象类型不一致的时候，才需要进行类型转换
+
+就是cs61b里面is a的问题，把右边的当做左边来用，看说得通不。**所有的子类转换为父类，都是说得通的**
+
+#### 父类/接口转子类(向下转型)
+父类转子类，有的时候行，有的时候不行，所以必须进行**强制转换。**
+```
+ Hero h =new Hero();
+ ADHero ad = new ADHero();
+ h = ad;
+ ad = (ADHero) h;
+```
+第三行子类转父类，直接转换    
+第四行，强制转换，**可行：因为，此时h已经指向了ad这个引用指向的ADHero对象，所以可以转换成功**
+
+h引用有可能指向一个ad对象，也有可能指向一个support对象,所以把h引用转换成AD类型的时候，就有可能成功，有可能失败。因此要进行强制转换，换句话说转换后果自负。到底能不能转换成功，**要看引用h到底指向的是哪种对象，h指向的是一个ad对象，所以转换成ADHero类型，是可以的**
+
+```
+Support s =new Support();
+h = s;
+ad = (ADHero)h;
+````
+第二行：把一个support对象当做Hero使用，一定可以  
+第三行：h指向的是一个support对象，所以转换成ADHero类型，会失败。失败的表现形式是抛出异常 ClassCastException 类型转换异常。
+
+#### 没有继承关系
+没有继承关系的两个类相互转换一定会失败：虽然ADHero和APHero都继承了Hero，但是彼此没有互相继承关系。
+
+#### 类转换成接口(向上转型)
+```
+ADHero ad = new ADHero();        
+AD adi = ad;//adi指向了ADHero()这个新创建的对象
+//向下：
+ADHero adHero = (ADHero) adi;
+ADAPHero adapHero = (ADAPHero) adi;
+```
+把一个ADHero类型转换为AD接口，向上转换，而AD接口只有一个physicAttack方法，这就意味着转换后就有可能要调用physicAttack方法，而ADHero一定是有physicAttack方法的，所以转换是能成功的。
+
+比如函数参数是一个接口，但是实参确实接口的实现类，这就是一个典型的向上转型。
+        
+#### 接口转换成实现类(向下转型)
+**所有的向下转型：向下转型必须要先向上转型。必须先由子类向上转成父类，才能再由父类向下转成子类，不能直接拿一个new出来的父类直接转化成子类**
+
+第三行的向下转换：adi实际上是指向一个ADHero的，所以能够转换成功  
+第四行：adi引用所指向的对象是一个ADHero，要转换为ADAPHero就会失败。
+
+#### instanceof
+测试它左边的一个引用所指向的对象是否是它右边的类的实例，返回 boolean 的数据类型。
+
+返回true的情况：
+* a对象是B类型的一个实例化对象
+* a对象是B类型直接或间接**子类的对象**
+* a对象所属的类型直接或间接实现了B接口。
+
+### 重写/override
+子类在继承父类后，重复提供该方法，就叫做方法的重写。
+
+### 多态/Polymorphism
+> 多态是同一个行为具有多个不同表现形式或形态的能力。
+
+#### 操作符的多态
+同一个操作符在不同情境下，具备不同的作用。
+
+比如，如果+号两侧都是整型，那么+代表 数字相加。如果+号两侧，**任意一个**是字符串，那么+代表字符串连接。
+```
+int a = 50;
+String b = "s";
+String c = a+b; //如果+号两侧，任意一个是字符串，那么+代表字符串连接
+System.out.println(c);
+```
+输出的为50s，是个字符串！！！
+
+#### 类的多态
+父类引用指向子类对象：Item i1= new LifePotion();。
+
+需要如下条件：
+* 继承
+* 父类（接口）引用指向子类对象。
+* 调用的方法有重写，这样调用同一个方法时，才会有不同的状态。
+
+### 隐藏
+> 与重写类似，方法的重写是子类覆盖父类的**对象方法**。隐藏，就是子类覆盖父类的**类方法**。
 
 
 
