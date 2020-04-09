@@ -130,4 +130,40 @@ break只能结束一层的循环，跳出外部，有两种方法：
 * 在外部循环的前一行，加上标签，在内部循环break的时候使用该标签，能达到结束外部循环的效果：**outloop：**，**break outloop；**
 
 ## 4，Arrays:
-* 数组复制：copyOfRange：int[] b = Arrays.copyOfRange(a, 0, 3); 第一个是源数组，第二个是起点，取得到，第三个是终点取
+* 数组复制：copyOfRange：int[] b = Arrays.copyOfRange(a, 0, 3); 第一个是源数组，第二个是起点，取得到，第三个是终点取不到。
+* 转换为字符串：String content = Arrays.toString(a);
+* 排序：Arrays.sort(a);
+* 搜索某元素出现的位置：需要注意的是，使用binarySearch进行查找之前，必须使用sort进行排序，如果数组中有多个相同的元素，查找结果是不确定的。Arrays.binarySearch(a, 62)
+* 填充：Arrays.fill(a, 5);使用同一个值，填充整个数组。
+
+## 5，类和对象
+### 引用：
+>如果一个变量的类型是 类类型，而非基本类型(primary type)，那么该变量又叫做引用。(reference)
+
+Hero h = new Hero();
+
+创建一了Hero对象，h这个变量是Hero类型，又称为“引用”，=使得h这个引用指向右侧创建的对象。有时候，引用有多个，但是对象只有一个。但是，一个引用同一时间只能指向一个对象。
+### this
+this代表当前对象：
+* 通过this 访问属性。在方法中，当参数名和方法名一样时，只能访问到参数name，所以参数名不得不使用其他名字。或者，可以使用this.name代表属性名，name代表参数名。
+* 通过this调用其他的构造方法：如果要在一个构造方法中，调用另一个构造方法，可以使用this()。（构造函数的重载overload)
+### 访问修饰符
+#### 类之间的关系：
+* 自身：hero类
+* 同包子类：ADHero这个类是Hero的子类，并且和Hero处于同一个包下
+* 不同包子类：Support这个类是Hero的子类，但是在另一个包下
+* 同包类：在一个包下，但是没有继承关系
+* 其他类：Item这个类，在不同包，也没有继承关系的类
+#### private
+私有的，只有自身可以访问
+#### 无修饰符
+没有修饰符即代表package/friendly/default（？
+同包的子类或无关类都可以access
+#### protected
+比无修饰符的又多了一点：同包的类、不同包的子类都可以访问。
+#### public
+所有的类都可以access
+
+
+
+
