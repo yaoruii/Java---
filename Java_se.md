@@ -445,5 +445,16 @@ public Hero(){
 ### object
 > 所有类的父类。
 
+### final
+> final修饰类，方法，基本类型变量，引用的时候分别有不同的意思。
+#### 修饰类
+> public final class Hero extends Object {}
+
+类被修饰为final时，该类是无法被继承的。其子类会出现编译错误。
+
+#### 修饰方法
+> public final void useItem(Item i){}
+
+hero
 
 
