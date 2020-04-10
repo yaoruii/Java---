@@ -455,6 +455,19 @@ public Hero(){
 #### 修饰方法
 > public final void useItem(Item i){}
 
-hero
+hero的方法useItem()被修饰为final，所以ADhero不能override该方法。
 
+#### 修饰基本类型变量
+表示该变量只有一次赋值机会
+
+#### 修饰引用
+表示该引用只有1次指向对象的机会
+
+#### public static final int num = 6
+public static final结合在一起，定义：以公开，直接访问，不会变化的值的常量。
+
+### 抽象类/abstract
+改变之前的思路，把hero声明为abstract的，并为Hero增加一个抽象方法 attack，public abstract void attack();
+
+APHero,ADHero,ADAPHero是Hero的子类，继承了Hero的属性和方法。但是各自的攻击手段是不一样的，所以继承Hero类后，
 
