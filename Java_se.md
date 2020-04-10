@@ -467,7 +467,172 @@ hero的方法useItem()被修饰为final，所以ADhero不能override该方法。
 public static final结合在一起，定义：以公开，直接访问，不会变化的值的常量。
 
 ### 抽象类/abstract
-改变之前的思路，把hero声明为abstract的，并为Hero增加一个抽象方法 attack，public abstract void attack();
+#### 抽象方法
+如果你想设计这样一个类，该类包含一个特别的成员方法，该方法的具体实现由它的子类确定，那么你可以在父类中声明该方法为抽象方法。**抽象方法只包含一个方法名，而没有方法体。**
 
-APHero,ADHero,ADAPHero是Hero的子类，继承了Hero的属性和方法。但是各自的攻击手段是不一样的，所以继承Hero类后，
+**任何子类必须重写父类的抽象方法，或者声明自身为抽象类。**
+
+改变之前的思路，把hero声明为abstract的，并为Hero增加一个抽象方法 attack，**public abstract void attack();注明为 adstract的方法**
+
+APHero,ADHero,ADAPHero是Hero的子类，继承了Hero的属性和方法。但是各自的攻击手段是不一样的，所以继承Hero类后，再各自实现具体的attack()方法。
+
+#### 抽象类可以没有抽象方法
+虽然没有抽象方法，但是一旦被声明为了抽象类，就不能够直接被实例化名，所以抽象类必须被继承，才能被使用
+
+#### 与接口的区别
+* 子类只能继承一个抽象类，子类可以实现多个接口。
+* 抽象类可以定义public,protected,package,private 静态和非静态属性，final和非final属性。但是接口中声明的属性，只能是public，静态，final的。
+* 抽象类和接口都可以有实体方法。 接口中的实体方法，叫做[默认方法]()
+
+### 内部类
+#### 成员内部类
+可以直接使用外部类的所有成员和方法，即使是private的，同时外部类要访问内部类的所有成员变量/方法，则需要通过内部类的对象来获取：
+```
+public class Outer { 
+    public class Inner { 
+        public void print(String str) { 
+            System.out.println(str); 
+        } 
+    } 
+ 
+    public Inner getInner() { 
+        return new Inner(); 
+    } 
+  
+    public static void main(String[] args) { 
+        Outer outer = new Outer(); 
+        Outer.Inner inner = outer.new Inner(); //创建方法
+        inner.print("Outer.new"); //通过实例化一个内部类inner对象来访问内部类的方法print();
+ 
+        inner = outer.getInner(); 
+        inner.print("Outer.get"); 
+    } 
+}
+```
+成员内部类不能含有static的变量和方法。因为**成员内部类需要先创建了外部类，才能创建它自己的。只有一个外部类对象存在的时候，才有意义**。在成员内部类要引用外部类对象时，使用**外部类名.this，Outer.this**来表示外部类对象；创建内部类时，使用：**外部类的名称.内部类的名称 内部类的引用obj = 外部类的引用（outerobj）.new Inner()** 因为内部类的构造函数也是在外部类的内部，所以使用.调用该构造函数。
+
+#### 局部内部类
+定义在一个方法或者一个作用域里面的类，它和成员内部类的区别在于**局部内部类的访问仅限于方法内或者该作用域内。**
+
+局部内部类就像是**方法里面的一个局部变量一样，是不能有public、protected、private以及static修饰符的。**
+```
+class People{
+    public People() {
+         
+    }
+}
+ 
+class Man{
+    public Man(){
+         
+    }
+     
+    public People getWoman(){
+        class Woman extends People{   //局部内部类,在外部类Man的方法getWoman()内部定义的
+            int age =0;
+        }
+        return new Woman();
+    }
+}
+```
+#### 静态内部类
+在一个类里面声明一个静态内部类，静态内部类是不需要依赖于外部类的。
+
+这点和类的静态成员属性有点类似，并且**它不能使用外部类的非static成员变量或者方法**，这点很好理解，因为在没有外部类的对象的情况下，可以创建静态内部类的对象，如果允许访问外部类的非static成员就会产生矛盾，因为外部类的非static成员必须依附于具体的对象。
+```
+class Outter {
+    public Outter() {
+         
+    }
+     
+    static class Inner {
+        public Inner() {
+             
+        }
+    }
+}
+```
+#### 匿名内部类
+匿名内部类是没有名字的内部类，因为没有名字，所以匿名内部类只能使用一次，它通常用来简化代码编写，使用匿名内部类有个前提条件：必须继承一个父类或实现一个接口。
+
+##### 用于抽象类：
+```
+abstract class Person {
+    public abstract void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+```
+我们直接将抽象类Person中的方法在大括号中实现了。这样便可以省略一个类的书写。
+
+##### 用于接口：
+```
+interface Person {
+    public void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+```
+##### Thread类的匿名内部类实现
+匿名内部类最常用的情况就是在多线程的实现上，因为要实现多线程必须继承Thread类或者实现Runnable接口。
+##### Runnable接口的匿名内部类实现
+
+##### 匿名类的作用
+* 一个类继承其他类或者实现接口，并不需要增加额外的方法，只是对继承方法的实现或是覆盖。
+* 只是为了获得一个对象实例，不需要知道其实际类型。
+* 类名没有意义，也就是不需要使用到。
+
+### 默认方法
+> Java 8 新增了接口的默认方法。默认方法就是**接口可以有实现方法，而且不需要实现类去实现其方法。**我们只需在方法名前面加个 default 关键字即可实现默认方法。
+```
+public interface Vehicle {
+   default void print(){
+      System.out.println("我是一辆车!");
+   }
+}
+```
+#### 多个默认方法
+一个类实现了多个接口，且这些接口有相同的默认方法，解决方法：
+1. 创建自己的默认方法，来覆盖重写接口的默认方法：
+```
+public class Car implements Vehicle, FourWheeler {
+   default void print(){
+      System.out.println("我是一辆四轮汽车!");
+   }
+}
+```
+2，使用super来调用指定接口的默认方法：
+```
+public class Car implements Vehicle, FourWheeler {
+   public void print(){
+      Vehicle.super.print();//会调用vehicle这个接口的默认方法
+   }
+}
+```
+### UML 图 —— 类之间的关系
+
+## 7，数字与字符串
+### 装箱与拆箱
+#### 封装类
+所有的基本类型都有对应的类类型，即封装类，比如，int对应Integer。
+#### Number类
+数字封装类有：Byte,Short,Integer,Long,Float,Double。（整型与浮点型）
 
