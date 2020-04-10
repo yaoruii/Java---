@@ -644,6 +644,7 @@ int i = 5;
 Integer it = new Integer(i);//使用new语句，传入基本类型
 ```
 #### 封装类转基本类型
+使用intValue()这个非静态类，所以需要先创建一个封装类的对象。
 ```
 int i = 5;
 //基本类型转换成封装类型
@@ -659,8 +660,10 @@ int i2 = it.intValue();
 
 ### 字符串转换
 #### 数字（int型）转字符串（string型）
+
 ##### 方法一：使用String类的静态方法valueOf
 String str = String.valueOf(i);//这个i不局限于int，还可以是char
+
 ##### 方法二：先把基本类型装箱为对象，然后调用对象的toString
 必须保证object不是null值
 ```
@@ -677,13 +680,79 @@ String str2 = it.toString();//调用对象的toString方法
 String s = "123";
 
 byte b = Byte.parseByte(s);//=123
-short t = Short.parseShort(s);//
-int i = Integer.parseInt(s);
-long l = Long.parseLong(s);
-Float f = Float.parseFloat(s);
-Double d = Double.parseDouble(s);
-boolean bo = Boolean.parseBoolean(s);
-char c = Character.parseCharacter(s);
+short t = Short.parseShort(s);//123
+int i = Integer.parseInt(s);//123
+long l = Long.parseLong(s);//123
+Float f = Float.parseFloat(s);//123.0
+Double d = Double.parseDouble(s);//123.0
+boolean bo = Boolean.parseBoolean(s);//fasle???
 ```
+##### 方法二：i=Integer.valueOf(s).intValue();
+i=Integer.valueOf(s).intValue();，方法一不会产生一个对象，因为使用的是静态方法，方法二相当于new Integer(Integer.parseInt(s)).intValue()。会创建一个封装类的对象。
+
+### Math方法
+java.lang.Math提供了一些常用的数学运算方法，并且都是以静态方法的形式存在
+#### Math.round(f1)
+四舍五入
+#### Math.random()
+0-1之间的浮点数，取不到1
+#### Math.sqrt(9)
+sqrt()开平方。
+#### Math.pow(2,4)
+2的四次方。
+#### Math.PI
+派
+#### Math.E
+自然常数e
+
+### 格式化输出（恶
+
+%s：表示字符串，%d：表示数字，%n：表示换行。
+```
+// 一般方式
+System.out.println("x = " + x + ", y = " + y);
+//printf()方法
+System.out.printf("x = %d, y = %f\n", x, y);
+// format()方式
+System.out.format("x = %d, y = %f\n", x, y);
+```
+printf和format能够达到一模一样的效果，
+
+### 字符
+#### Character常见方法
+```
+System.out.println(Character.isLetter('a'));//判断是否为字母
+System.out.println(Character.isDigit('a')); //判断是否为数字
+System.out.println(Character.isWhitespace(' ')); //是否是空白
+System.out.println(Character.isUpperCase('a')); //是否是大写
+System.out.println(Character.isLowerCase('a')); //是否是小写
+
+System.out.println(Character.toUpperCase('a')); //转换为大写
+System.out.println(Character.toLowerCase('A')); //转换为小写
+
+String a = 'a'; //不能够直接把一个字符转换成字符串
+String a2 = Character.toString('a'); //转换为字符串
+```
+#### 常见转义
+\n：换行；  
+\t：制表符，可达到对齐效果  
+\'：单引号’  
+\"：双引号“   
+\\：反斜杠本身。
+
+### 字符串
+#### 字符串常量池
+JVM为了提供性能，减少内存开支，在实例化字符串常量的时候进行了一些优化：
+* 为字符串开启一个字符串常量池，类似于缓存区
+* 创建字符串常量时，首先检查字符串常量池是否存在该字符串
+* 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中
+
+#### 常量池在哪里？
+<div>
+        <img src="images/堆栈方法区.png"></img>
+</div>
+
+##### 堆
+
 
 
