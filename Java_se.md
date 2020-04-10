@@ -636,3 +636,54 @@ public class Car implements Vehicle, FourWheeler {
 #### Number类
 数字封装类有：Byte,Short,Integer,Long,Float,Double。（整型与浮点型）
 
+这些封装类继承自抽象类Number。
+#### 基本类型转封装类
+```
+int i = 5; 
+//基本类型转换成封装类型
+Integer it = new Integer(i);//使用new语句，传入基本类型
+```
+#### 封装类转基本类型
+```
+int i = 5;
+//基本类型转换成封装类型
+Integer it = new Integer(i);       
+//封装类型转换成基本类型
+int i2 = it.intValue();
+```
+#### 自动装箱(基本类型转封装类)
+不需要调用new语句，直接通过=符号自动把 基本类型 转换为 类类型 就叫装箱：Integer it2 = i;
+
+#### 自动拆箱（封装类转基本类型）
+不需要intValue()，通过=就自动转换成int类型，就叫拆箱：int i3 = it;
+
+### 字符串转换
+#### 数字（int型）转字符串（string型）
+##### 方法一：使用String类的静态方法valueOf
+String str = String.valueOf(i);//这个i不局限于int，还可以是char
+##### 方法二：先把基本类型装箱为对象，然后调用对象的toString
+必须保证object不是null值
+```
+int i = 5;
+Integer it = i;//自动装箱
+String str2 = it.toString();//调用对象的toString方法
+```
+##### 方法三：i + “”
+
+#### 字符串转数字
+##### 方法一：parseXxx(String str)静态方法
+8种基本类型对应的包装类都提供了一个parseXxx(String str)的静态方法，用于将字符串转换成基本类型。如果字符串不是**数值型字符串**，转换将导致一个运行时错误。
+```
+String s = "123";
+
+byte b = Byte.parseByte(s);//=123
+short t = Short.parseShort(s);//
+int i = Integer.parseInt(s);
+long l = Long.parseLong(s);
+Float f = Float.parseFloat(s);
+Double d = Double.parseDouble(s);
+boolean bo = Boolean.parseBoolean(s);
+char c = Character.parseCharacter(s);
+```
+
+
