@@ -760,8 +760,9 @@ JVM为了提供性能，减少内存开支，在实例化字符串常量的时�
 ##### 方法区
 静态区，跟堆一样，被所有的线程共享。方法区中包含的都是在整个程序中永远唯一的元素，如class，static变量。**字符串常量池则存在于方法区**。
 <div>
-        <img src="images/字符串创建"></img>
+        <img src="images/字符串创建.png"></img>
 </div>
+
 ```
 public static void main(String[] args) {
     String s = new String("1");
@@ -776,6 +777,7 @@ public static void main(String[] args) {
 }
 ```
 > 输出为 false, true。
+
 先看 s3和s4字符串。```String s3 = new String("1") + new String("1");```，这句代码中现在生成了2最终个对象，**是字符串常量池中的“1”** 和 **Heap 中的 s3引用指向的对象**，s3引用对象内容是”11”，**但是常量池中是没有11的。**
 
 ```s3.intern();```这一句代码，是将 s3中的“11”字符串放入 String 常量池中，因为此时常量池中不存在“11”字符串，所以会在常量池中创建一个“11”的对象。常量池中不需要再存储一份对象了，可以直接存储堆中的引用。堆中的引用即堆中的s3这个引用，这个引用指向s3的对象。
@@ -798,6 +800,7 @@ public static void main(String[] args) {
     System.out.println(s3 == s4);
 }
 ```
+
 > 输出：false, false
 
 经过上边的分析，第一个```s.intern();```没什么作用，所以依旧返回false。第二个s3指向堆中的对象后，将“1”放入了常量池，s4声明时，创建“11”放入常量池中，指向该对象，所以地址不一样。
