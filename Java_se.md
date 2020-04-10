@@ -755,9 +755,67 @@ JVM为了提供性能，减少内存开支，在实例化字符串常量的时�
 ##### 堆
 存储的是对象，每个对象都包含一个与之对应的class。**JVM只有一个堆区(heap)被所有线程共享**，堆中不存放基本类型和对象引用，**只存放对象本身**。对象的由垃圾回收器负责回收，因此大小和生命周期不需要确定
 ##### 栈
-每个线程包含一个栈区，栈中只保存**基础数据类型的对象**和**自定义对象的引用(不是对象)** ，每个栈中的数据(原始类型和对象引用)都是私有的。栈分为3个部分：基本类型变量区、执行环境上下文、操作指令区(存放操作指令)。数据大小和生命周期是可以确定的，当没有引用指向数据时，这个数据就会自动消失
+**每个线程包含一个栈区**，栈中只保存**基础数据类型的对象**和**自定义对象的引用(不是对象)** ，每个栈中的数据(原始类型和对象引用)都是私有的。栈分为3个部分：基本类型变量区、执行环境上下文、操作指令区(存放操作指令)。数据大小和生命周期是可以确定的，当没有引用指向数据时，这个数据就会自动消失
 
 ##### 方法区
 静态区，跟堆一样，被所有的线程共享。方法区中包含的都是在整个程序中永远唯一的元素，如class，static变量。**字符串常量池则存在于方法区**。
+<div>
+        <img src="images/字符串创建"></img>
+</div>
+```
+public static void main(String[] args) {
+    String s = new String("1");
+    s.intern();
+    String s2 = "1";
+    System.out.println(s == s2);
 
+    String s3 = new String("1") + new String("1");
+    s3.intern();
+    String s4 = "11";
+    System.out.println(s3 == s4);
+}
+```
+> 输出为 false, true。
+先看 s3和s4字符串。```String s3 = new String("1") + new String("1");```，这句代码中现在生成了2最终个对象，**是字符串常量池中的“1”** 和 **Heap 中的 s3引用指向的对象**，s3引用对象内容是”11”，**但是常量池中是没有11的。**
 
+```s3.intern();```这一句代码，是将 s3中的“11”字符串放入 String 常量池中，因为此时常量池中不存在“11”字符串，所以会在常量池中创建一个“11”的对象。常量池中不需要再存储一份对象了，可以直接存储堆中的引用。堆中的引用即堆中的s3这个引用，这个引用指向s3的对象。
+
+最后```String s4 = "11";``` 这句代码中”11”是显示声明的，因此会直接去常量池中创建，创建的时候发现已经有这个对象了，指向 s3 引用对象的一个引用。所以 s4 引用就指向和 s3 一样了。因此最后的比较 s3 == s4 是 true。
+
+再看 s 和 s2 对象。 ```String s = new String("1");``` 第一句代码，生成了2个对象。常量池中的“1” 和 JAVA Heap 中的字符串对象，**s引用指向这个对象**。接下来的```s.intern();```:如果常量池中存在当前字符串, 就会直接返回当前字符串. 如果常量池中没有此字符串, 会将此字符串放入常量池中后, 再返回”,因此，会发现常量池中已经有“1”了，所以```s.intern();```的位置与存在与否并不重要。```接下来String s2 = "1";``` 这句代码是生成一个 s2的引用指向常量池中的“1”对象。 结果就是 s 和 s2 的引用地址明显不同=====>>> false
+
+将s.intern()和s3.intern()都往下顺调一句：
+```
+public static void main(String[] args) {
+    String s = new String("1");
+    String s2 = "1";
+    s.intern();
+    System.out.println(s == s2);
+
+    String s3 = new String("1") + new String("1");
+    String s4 = "11";
+    s3.intern();
+    System.out.println(s3 == s4);
+}
+```
+> 输出：false, false
+
+经过上边的分析，第一个```s.intern();```没什么作用，所以依旧返回false。第二个s3指向堆中的对象后，将“1”放入了常量池，s4声明时，创建“11”放入常量池中，指向该对象，所以地址不一样。
+
+### String的方法
+* char c = sentence.charAt(0);//十几天没刷题，这个方法都写不对了。草草草刷刷刷
+* char[] cs = sentence.toCharArray(); //获取对应的字符数组
+* String subString2 = sentence.substring(3,5);//左闭右开
+* 根据分隔符进行分隔，得到的是字符串数组：String subSentences[] = sentence.split(",");
+* sentence.trim()：去掉首尾空格
+* sentence.toLowerCase()：全部变成小写
+* sentence.toUpperCase()：全部变成大写
+* 定位：sentence.indexOf('8')：该字符第一次出现的位置；sentence.indexOf("超神")：该字符串第一次出现的位置；sentence.indexOf(',',5)：加上第二个参数5，从位置5开始，出现的第一次该字符/字符串的位置。
+* 同理，sentence.lastIndexOf("了")，可有上边的这些不同的情况，是最后一次出现的位置。
+* replaceAll 替换所有的，replaceFirst 只替换第一个：  
+```sentence =sentence.replaceAll("了","爱");```，该方法不改变调用的对象，所以，要改变自身的话，要重新赋值sentence为该方法的返回值。
+* sentence.startsWith("爱")：返回true或者false。同理，sentence.endsWith("爱"),是够以某**字符串**开始或结束。
+
+### StringBuffer
+> 待补充
+### StringBuffer
